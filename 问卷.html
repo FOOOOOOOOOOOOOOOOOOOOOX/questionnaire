@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问卷</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            font-family: Arial, sans-serif;
+        }
+        #form, #questionContainer, #finalMessage {
+            display: none;
+            text-align: center;
+        }
+        #form p {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        #form input {
+            width: 80%;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        #submitBtn {
+            font-size: 24px;
+        }
+        .question {
+            position: absolute;
+        }
+        .final-message {
+            font-size: 36px;
+            color: red;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .big-final-message {
+            font-size: 48px;
+            color: red;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="form">
+        <p>你喜欢吃什么？</p ><input type="text" id="q1">
+        <p>你最想去哪里玩？</p ><input type="text" id="q2">
+        <p>你最喜欢的颜色是什么？</p ><input type="text" id="q3">
+        <p>你喜欢下雨天还是晴天？</p ><input type="text" id="q4">
+        <p>你喜欢我吗？</p ><input type="text" id="q5">
+        <button id="submitBtn">提交</button>
+    </div>
+
+    <div id="questionContainer"></div>
+
+    <div id="finalMessage" class="final-message"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('form').style.display = 'block';
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            document.getElementById('form').style.display = 'none';
+            askQuestion();
+        });
+
+        function askQuestion() {
+            const container = document.getElementById('questionContainer');
+            container.style.display = 'block';
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <p>你喜欢我吗？</p >
+                <button class="answerBtn">a喜欢</button>
+                <button class="answerBtn">b喜欢</button>
+            `;
+            questionDiv.style.top = `${Math.random() * 80 + 10}%`;
+            questionDiv.style.left = `${Math.random() * 80 + 10}%`;
+            container.appendChild(questionDiv);
+
+            document.querySelectorAll('.answerBtn').forEach(btn => {
+                btn.addEventListener('click', handleAnswerClick);
+            });
+        }
+
+        let clickCount = 0;
+
+        function handleAnswerClick() {
+            clickCount++;
+            if (clickCount < 4) {
+                askQuestion();
+            } else {
+                showFinalQuestions();
+            }
+        }
+
+        function showFinalQuestions() {
+            let interval = 50; 
+            const container = document.getElementById('questionContainer');
+            let questionIndex = 0;
+
+            const intervalId = setInterval(() => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <p style="font-size: ${Math.random() * 20 + 10}px">你喜欢我吗？</p >
+                    <button class="answerBtn">a喜欢</button>
+                    <button class="answerBtn">b喜欢</button>
+                `;
+                questionDiv.style.top = `${Math.random() * 90}%`;
+                questionDiv.style.left = `${Math.random() * 90}%`;
+                container.appendChild(questionDiv);
+
+                questionIndex++;
+                if (questionIndex >= 50) {
+                    clearInterval(intervalId);
+                    showRedFinalQuestion();
+                }
+            }, interval);
+        }
+
+        function showRedFinalQuestion() {
+            const container = document.getElementById('questionContainer');
+            const finalQuestionDiv = document.createElement('div');
+            finalQuestionDiv.className = 'question big-final-message';
+            finalQuestionDiv.innerHTML = `
+                <p>你喜欢我吗？</p >
+                <button class="answerBtn">a喜欢</button>
+                <button class="answerBtn">b喜欢</button>
+            `;
+            finalQuestionDiv.style.color = 'red';
+            container.appendChild(finalQuestionDiv);
+
+            document.querySelectorAll('.answerBtn').forEach(btn => {
+                btn.addEventListener('click', displayFinalText);
+            });
+        }
+
+        function displayFinalText() {
+            document.body.innerHTML = '';
+            const message = document.createElement('div');
+            message.className = 'final-message';
+            document.body.appendChild(message);
+            const text = '我就知道你喜欢我☺️';
+            let i = 0;
+
+            const interval = setInterval(() => {
+                message.innerText += text[i];
+                i++;
+                if (i >= text.length) clearInterval(interval);
+            }, 100);
+        }
+    </script>
+</body>
+</html>
